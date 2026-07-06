@@ -2,7 +2,9 @@
 
 Condensed from [Design_Doc.md §21](Design_Doc.md). Each phase builds on the last — the rule is: **do not build the full brain first. Build one Cell, make it work, then grow.**
 
-## Phase 0 — Project Foundation
+**Definition of done for every phase:** deliverables implemented, tests passing, and a plain-language walkthrough of every function added to [docs/understanding/](docs/understanding/).
+
+## Phase 0 — Project Foundation ✅ *(LICENSE still pending)*
 
 **Goal:** Repository and basic project structure.
 
@@ -12,7 +14,7 @@ Condensed from [Design_Doc.md §21](Design_Doc.md). Each phase builds on the las
 
 **Done when:** the project installs locally and runs with `python scripts/run_cli.py`.
 
-## Phase 1 — Cell System
+## Phase 1 — Cell System ✅
 
 **Goal:** Build the smallest unit of intelligence.
 

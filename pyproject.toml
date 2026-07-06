@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "incortex"
+version = "0.1.0.dev0"
+description = "A biologically inspired, modular, self-learning cognitive architecture - built from Cells to Cortex."
+readme = "README.md"
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-cov>=5"]
+
+[tool.setuptools.packages.find]
+include = ["incortex*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

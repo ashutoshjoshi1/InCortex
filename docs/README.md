@@ -13,4 +13,12 @@ Deep-dive documentation, split out from [Design_Doc.md](../Design_Doc.md) as eac
 | [api_reference.md](api_reference.md)                 | REST endpoints and schemas                     | §19               |
 | [development_phases.md](development_phases.md)       | Phase-by-phase build plan                      | §21 / ROADMAP.md  |
 
+## Understanding Docs
+
+`understanding/` holds one plain-language document per **completed** phase, explaining every function built in that phase — written for readers, not just coders. This is a standing convention: a phase is not done until its understanding doc exists.
+
+| Document | Phase |
+| -------- | ----- |
+| [understanding/phase_1_cell_system.md](understanding/phase_1_cell_system.md) | Phase 1 — Cell System |
+
 `assets/` holds images used by the README and docs.

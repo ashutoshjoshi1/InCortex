@@ -18,7 +18,7 @@ The project grows intelligence from the smallest unit, called a **Cell**, into l
 
 InCortex is not one giant model. It is a **living system of connected intelligence modules**.
 
-> 📐 **Project status: design phase.** The full architecture is specified in [Design_Doc.md](Design_Doc.md). The repository structure below is scaffolded; implementation begins with [Phase 0 → Phase 1](ROADMAP.md).
+> 🧬 **Project status: Phase 1 — Cell System implemented.** The Cell layer ([`incortex/cells/`](incortex/cells/)) is built and fully tested; try it with `python scripts/run_cli.py`. The full architecture is specified in [Design_Doc.md](Design_Doc.md); build order in [ROADMAP.md](ROADMAP.md).
 
 ---
 

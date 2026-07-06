@@ -1,10 +1,10 @@
 # `scripts/` — Developer Utilities
 
-Planned scripts (Design_Doc §20):
+Scripts (Design_Doc §20):
 
-- `init_db.py` — initialize SQLite memory storage
-- `run_cli.py` — start the CLI chat (Phase 0 success criterion)
-- `run_api.py` — start the FastAPI service
-- `seed_memory.py` — load starter memory records
+- `run_cli.py` — ✅ CLI chat demo wiring the Phase 1 Cells (Phase 0 success criterion)
+- `init_db.py` — planned: initialize SQLite memory storage (Phase 5)
+- `run_api.py` — planned: start the FastAPI service (Phase 4+)
+- `seed_memory.py` — planned: load starter memory records (Phase 5)
 
-**Status:** scaffolding only.
+**Status:** `run_cli.py` runs; the rest arrive with their phases.
