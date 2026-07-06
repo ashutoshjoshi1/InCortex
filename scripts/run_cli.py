@@ -1,8 +1,8 @@
-"""InCortex CLI starter (Phase 0 success criterion, powered by Phase 1 Cells).
+"""InCortex CLI (Phase 2 — running on Tissues).
 
-A minimal loop wiring IntentCell -> MemoryCell -> FeedbackCell:
-teach/remember stores memories, questions retrieve them, and
-'good'/'bad' feedback updates every Cell's track record.
+The conversation loop now flows through whole Tissues:
+LanguageTissue understands and replies, MemoryTissue stores and retrieves,
+LearningTissue scores feedback and spreads it to every participating Cell.
 
 Run:  python scripts/run_cli.py
 """
@@ -12,50 +12,53 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from incortex.cells import CellFeedback, FeedbackCell, IntentCell, MemoryCell
+from incortex.tissues import LanguageTissue, LearningTissue, MemoryTissue
 
 PROMPT = "you> "
-COMMANDS = "Commands: 'health' shows cell health, 'good'/'bad' gives feedback, 'quit' exits."
+COMMANDS = "Commands: 'health' shows tissue health, 'good'/'bad' gives feedback, 'quit' exits."
 
 
-def respond(intent_cell, memory_cell, text):
-    intent = intent_cell.process(text).content["intent"]
+def respond(language, memory, text):
+    """The Phase 2 chain: input → IntentCell → MemoryCell → ResponseCell."""
+    understanding = language.process(text)
+    intent = understanding.content["intent"]
+    cleaned = understanding.content["text"]
+    results = []
     if intent in ("teach", "remember"):
-        memory_cell.process({"action": "store", "content": text})
-        if intent == "teach":
-            return f"I have learned: {text}"
-        return "Got it. I will remember that."
-    if intent == "explain":
-        results = memory_cell.process({"action": "retrieve", "query": text}).content["results"]
-        if results:
-            best = results[0]
-            return f"From memory (score {best['score']:.2f}): {best['content']}"
-        return "I don't know that yet - teach me!"
-    return "Hello! Teach me something, ask me a question, or tell me what to remember."
+        memory.store(cleaned)
+    elif intent == "explain":
+        results = memory.retrieve(cleaned).content["results"]
+    reply = language.respond(intent, cleaned, results)
+    return reply.content["reply"]
 
 
-def give_feedback(cells, feedback_cell, success):
-    for cell in cells:
-        cell.learn(CellFeedback(success=success))
-    score = feedback_cell.process({"success": success}).content
-    return f"Feedback stored. Learning score {score['learning_score']:.2f} ({score['band']} band)."
+def give_feedback(learning, tissues, success):
+    """Score the event and teach every cell in the participating tissues."""
+    cells = [cell for tissue in tissues for cell in tissue.cells]
+    result = learning.distribute({"success": success}, cells)
+    content = result.content
+    return (
+        f"Feedback stored. Learning score {content['learning_score']:.2f} "
+        f"({content['band']} band), running average {content['running_score']:.2f}."
+    )
 
 
-def print_health(cells):
-    for cell in cells:
-        report = cell.health_check()
-        print(f"  {report['name']:<15} status={report['status']:<9} "
-              f"health={report['health']:.2f} confidence={report['confidence']:.2f} "
-              f"processed={report['processed']} feedback={report['feedback_count']}")
+def print_health(tissues):
+    for tissue in tissues:
+        report = tissue.health_check()
+        print(f"  {report['name']:<16} status={report['status']:<9} health={report['health']:.2f}")
+        for cell in report["cells"]:
+            print(f"    - {cell['name']:<15} status={cell['status']:<9} "
+                  f"health={cell['health']:.2f} confidence={cell['confidence']:.2f} "
+                  f"processed={cell['processed']} feedback={cell['feedback_count']}")
 
 
 def main():
-    intent_cell = IntentCell()
-    memory_cell = MemoryCell()
-    feedback_cell = FeedbackCell()
-    cells = [intent_cell, memory_cell]
+    language = LanguageTissue()
+    memory = MemoryTissue()
+    learning = LearningTissue()
 
-    print("InCortex v0.1 - Cell Genesis (Phase 1 demo)")
+    print("InCortex v0.1 - Cell Genesis (Phase 2: Tissues)")
     print(COMMANDS)
     while True:
         try:
@@ -69,12 +72,12 @@ def main():
             print("Goodbye.")
             return
         if text.lower() == "health":
-            print_health(cells + [feedback_cell])
+            print_health([language, memory, learning])
             continue
         if text.lower() in ("good", "bad"):
-            print(give_feedback(cells, feedback_cell, text.lower() == "good"))
+            print(give_feedback(learning, [language, memory], text.lower() == "good"))
             continue
-        print(f"incortex> {respond(intent_cell, memory_cell, text)}")
+        print(f"incortex> {respond(language, memory, text)}")
 
 
 if __name__ == "__main__":

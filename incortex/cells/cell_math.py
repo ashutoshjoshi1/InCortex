@@ -40,6 +40,27 @@ def ema_update(previous, sample, alpha):
     return (1.0 - alpha) * previous + alpha * sample
 
 
+# Eq 2.1 default — cold enough that a clear winner dominates
+COMBINATION_TEMPERATURE = 0.5
+# Eq 1.9 — status bands shared by Cells and Tissues
+STATUS_ACTIVE_THRESHOLD = 0.7
+STATUS_DEGRADED_THRESHOLD = 0.4
+
+
+def confidence_weights(confidences, temperature=COMBINATION_TEMPERATURE):
+    """Eq 2.1 — softmax mixing weights over member confidences."""
+    return softmax(confidences, temperature=temperature)
+
+
+def status_band(health):
+    """Eq 1.9 — map a health score to active / degraded / failing."""
+    if health >= STATUS_ACTIVE_THRESHOLD:
+        return "active"
+    if health >= STATUS_DEGRADED_THRESHOLD:
+        return "degraded"
+    return "failing"
+
+
 def exponential_decay(elapsed, half_life):
     """Eq 5.2 — the forgetting curve. Value halves exactly every half-life."""
     if half_life <= 0:

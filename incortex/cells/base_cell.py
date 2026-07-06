@@ -12,7 +12,7 @@ from collections import deque
 from dataclasses import dataclass
 from typing import Any
 
-from incortex.cells.cell_math import clip01, ema_update
+from incortex.cells.cell_math import clip01, ema_update, status_band
 
 # Eq 1.6 — weight of the raw per-call confidence vs. the historical track record
 GAMMA_RAW_WEIGHT = 0.7
@@ -23,9 +23,6 @@ HEALTH_WEIGHT_SUCCESS = 0.5
 HEALTH_WEIGHT_CONFIDENCE = 0.3
 HEALTH_WEIGHT_LATENCY = 0.2
 LATENCY_BUDGET_SECONDS = 1.0
-# Eq 1.9 — status bands
-STATUS_ACTIVE_THRESHOLD = 0.7
-STATUS_DEGRADED_THRESHOLD = 0.4
 
 FEEDBACK_LOG_SIZE = 100
 
@@ -140,13 +137,25 @@ class BaseCell:
         self._feedback_log.append(record)
         self._learn(record)
 
+    def accepts(self, message):
+        """True if this Cell's validator would accept the message.
+
+        Lets Tissues route messages to the right Cells (the Phase 2
+        stand-in for the learned gate of Eq 2.3).
+        """
+        try:
+            self._validate(message)
+        except ValueError:
+            return False
+        return True
+
     def health_check(self):
         """Report health per Eq 1.8 and the status band per Eq 1.9."""
         health = self._health_score()
         return {
             "name": self.name,
             "type": self.cell_type,
-            "status": self._status(health),
+            "status": status_band(health),
             "health": health,
             "confidence": self.historical_confidence,
             "processed": self._processed,
@@ -168,14 +177,6 @@ class BaseCell:
             + HEALTH_WEIGHT_CONFIDENCE * self._confidence_ema
             + HEALTH_WEIGHT_LATENCY * latency_score
         )
-
-    @staticmethod
-    def _status(health):
-        if health >= STATUS_ACTIVE_THRESHOLD:
-            return "active"
-        if health >= STATUS_DEGRADED_THRESHOLD:
-            return "degraded"
-        return "failing"
 
     @staticmethod
     def _coerce_feedback(feedback):

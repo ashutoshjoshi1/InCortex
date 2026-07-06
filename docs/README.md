@@ -20,5 +20,6 @@ Deep-dive documentation, split out from [Design_Doc.md](../Design_Doc.md) as eac
 | Document | Phase |
 | -------- | ----- |
 | [understanding/phase_1_cell_system.md](understanding/phase_1_cell_system.md) | Phase 1 — Cell System |
+| [understanding/phase_2_tissue_system.md](understanding/phase_2_tissue_system.md) | Phase 2 — Tissue System |
 
 `assets/` holds images used by the README and docs.

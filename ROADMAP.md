@@ -23,7 +23,7 @@ Condensed from [Design_Doc.md §21](Design_Doc.md). Each phase builds on the las
 
 **Done when:** a Cell can receive input, process it, return output, store feedback, and report health.
 
-## Phase 2 — Tissue System
+## Phase 2 — Tissue System ✅
 
 **Goal:** Group Cells into cooperative units.
 

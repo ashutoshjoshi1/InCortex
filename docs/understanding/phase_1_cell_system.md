@@ -227,6 +227,8 @@ Its own confidence is always 1.0 because this is pure arithmetic — there is no
 
 ## `scripts/run_cli.py` — the first conversation
 
+> *Note: in Phase 2 this script was rewired to run on Tissues — see [phase_2_tissue_system.md](phase_2_tissue_system.md). The description below matches the Phase 1 version.*
+
 A small command-line program that wires three Cells into a working loop, so Phase 1 is something you can *talk to*, not just test.
 
 ### `respond(intent_cell, memory_cell, text)`

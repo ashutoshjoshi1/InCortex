@@ -16,6 +16,7 @@ from incortex.cells import (
     FeedbackCell,
     IntentCell,
     MemoryCell,
+    ResponseCell,
     TextCell,
 )
 from incortex.cells.cell_math import (
@@ -396,6 +397,67 @@ class TestFeedbackCell:
             cell.process({"success": True, "rating": 9, "rating_min": 1, "rating_max": 5})
         with pytest.raises(ValueError):
             cell.process({"success": True, "correction_severity": -1})
+
+
+# ---------------------------------------------------------------------------
+# ResponseCell (added in Phase 2 for the Language Tissue)
+# ---------------------------------------------------------------------------
+
+
+class TestResponseCell:
+    def test_teach_acknowledgement(self):
+        out = ResponseCell().process({"intent": "teach", "text": "the sky is blue"})
+        assert out.content["reply"] == "I have learned: the sky is blue"
+        assert out.raw_confidence == pytest.approx(1.0)
+
+    def test_remember_acknowledgement(self):
+        out = ResponseCell().process({"intent": "remember", "text": "I like short answers"})
+        assert "remember" in out.content["reply"].lower()
+        assert out.raw_confidence == pytest.approx(1.0)
+
+    def test_explain_answers_from_best_memory(self):
+        results = [
+            {"content": "photosynthesis makes food from sunlight", "score": 0.66},
+            {"content": "unrelated fact", "score": 0.30},
+        ]
+        out = ResponseCell().process(
+            {"intent": "explain", "text": "what is photosynthesis", "memory_results": results}
+        )
+        assert "photosynthesis makes food" in out.content["reply"]
+        assert "0.66" in out.content["reply"]
+        # The reply is only as trustworthy as the memory behind it
+        assert out.raw_confidence == pytest.approx(0.66)
+
+    def test_explain_without_memory_admits_ignorance(self):
+        out = ResponseCell().process({"intent": "explain", "text": "what is dark matter"})
+        assert "teach me" in out.content["reply"].lower()
+        assert out.raw_confidence == pytest.approx(0.1)
+
+    def test_chat_greets(self):
+        out = ResponseCell().process({"intent": "chat", "text": "hello there"})
+        assert out.content["reply"]
+        assert out.raw_confidence == pytest.approx(0.9)
+
+    def test_validates_messages(self):
+        cell = ResponseCell()
+        with pytest.raises(ValueError):
+            cell.process("not a dict")
+        with pytest.raises(ValueError):
+            cell.process({"intent": "dance", "text": "x"})
+        with pytest.raises(ValueError):
+            cell.process({"intent": "teach", "text": "   "})
+        with pytest.raises(ValueError):
+            cell.process({"intent": "explain", "text": "x", "memory_results": "nope"})
+        with pytest.raises(ValueError):
+            cell.process({"intent": "explain", "text": "x", "memory_results": [{"score": 1}]})
+
+
+class TestBaseCellAccepts:
+    def test_accepts_reflects_the_validator(self):
+        cell = TextCell()
+        assert cell.accepts("hello") is True
+        assert cell.accepts("   ") is False
+        assert cell.accepts(123) is False
 
 
 # ---------------------------------------------------------------------------
