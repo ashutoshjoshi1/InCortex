@@ -12,4 +12,6 @@ Planned modules (Design_Doc §9, §20):
 - `text_cell.py`, `intent_cell.py`, `memory_cell.py`, `reasoning_cell.py`,
   `planner_cell.py`, `feedback_cell.py`, `safety_cell.py`
 
+**Math:** [docs/math_model.md §1](../../docs/math_model.md) — activation, entropy confidence, history blending, health score, and status bands (Eq. 1.1–1.10).
+
 **Status:** scaffolding only — built in Phase 1 (the first implementation phase).

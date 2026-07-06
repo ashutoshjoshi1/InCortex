@@ -14,4 +14,6 @@ Four test categories:
 3. **Safety** — dangerous actions are blocked or require approval
 4. **Learning** — feedback measurably changes future behavior
 
+**Math:** [docs/math_model.md §11](../docs/math_model.md) lists the testable properties of every equation — range, monotonicity, decay, fail-closed gating, convergence — which become property tests here.
+
 **Status:** scaffolding only — tests ship alongside each implementation phase.

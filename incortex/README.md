@@ -17,3 +17,5 @@ This is the main package. It is currently **scaffolding only** — no implementa
 | `interfaces/` | CLI, web, and voice front-ends               |
 
 Implementation order follows [ROADMAP.md](../ROADMAP.md): Cells first (Phase 1), then Tissues, Organs, and the Cortex Core.
+
+**Math:** every layer's equations — confidence, health, routing, memory decay, learning, risk — are specified in [docs/math_model.md](../docs/math_model.md), including a file-by-file equation map (§10).

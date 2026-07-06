@@ -11,4 +11,6 @@ Planned modules (Design_Doc §13–§14, §20):
 - `state.py` — system/session state
 - `config.py` — configuration loading
 
+**Math:** [docs/math_model.md §4](../../docs/math_model.md) — loop composition, routing threshold, scheduling priority, answer acceptance (Eq. 4.1–4.4).
+
 **Status:** scaffolding only — built in Phase 4.

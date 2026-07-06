@@ -8,4 +8,6 @@ Planned modules (Design_Doc §18, §20):
 - `tool_registry.py` — names, schemas, risk levels, enable/disable
 - `file_tools.py`, `python_tool.py`, `github_tool.py`
 
+**Math:** [docs/math_model.md §7](../../docs/math_model.md) — each tool carries a risk level feeding the permission gate (Eq. 7.1–7.2).
+
 **Status:** scaffolding only — built in Phase 7.

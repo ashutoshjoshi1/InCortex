@@ -9,4 +9,6 @@ Planned modules (Design_Doc §12.9, §25, §20):
 - `policy.py` — safety policy rules
 - `approval.py` — human-approval flow for risky actions
 
+**Math:** [docs/math_model.md §7](../../docs/math_model.md) — risk = likelihood × impact, fail-closed permission gate, z-score anomaly flagging (Eq. 7.1–7.3).
+
 **Status:** scaffolding only — built alongside Phases 3 and 7.

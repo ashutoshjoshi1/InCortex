@@ -14,4 +14,6 @@ Planned modules (Design_Doc §19, §20):
 - `routes_chat.py`, `routes_memory.py`, `routes_feedback.py`
 - `schemas.py` — Pydantic request/response models
 
+**Math:** [docs/math_model.md §8](../../docs/math_model.md) — the metrics exposed by `/v1/health` and `/v1/logs`: success rate, precision/recall@k, MRR, latency percentiles (Eq. 8.1–8.3).
+
 **Status:** scaffolding only — built after the Cortex Core (Phase 4+).

@@ -10,4 +10,6 @@ Planned modules (Design_Doc §12.7, §16, §20):
 - `mistake_tracker.py` — repeated-error tracking
 - `skill_builder.py` — reusable skill library (Phase 9)
 
+**Math:** [docs/math_model.md §6](../../docs/math_model.md) — feedback normalization, learning score, bandit strategy updates with UCB, mistake clustering, skill promotion, calibration (Eq. 6.1–6.7).
+
 **Status:** scaffolding only — built in Phase 5, extended in Phase 9.

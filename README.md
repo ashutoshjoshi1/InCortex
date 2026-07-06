@@ -88,6 +88,8 @@ Every component communicates through a standard `CortexMessage`, and every Cell 
 Input → Process → Output → Learn → Report Health
 ```
 
+Just as a neural network is defined by its equations, every InCortex layer has a formal mathematical model — activations, confidence and health scores, memory decay curves, learning updates, and risk gates are all specified in [docs/math_model.md](docs/math_model.md), with a file-by-file equation map.
+
 ## Project Structure
 
 ```text

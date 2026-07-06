@@ -9,6 +9,7 @@ Deep-dive documentation, split out from [Design_Doc.md](../Design_Doc.md) as eac
 | [memory_system.md](memory_system.md)                 | Memory types, storage, importance scoring      | §15               |
 | [learning_system.md](learning_system.md)             | Feedback loops, scoring, learning timeline     | §16               |
 | [safety_model.md](safety_model.md)                   | Permission levels, approval, ethics            | §11.2, §12.9, §25 |
+| [math_model.md](math_model.md)                       | Equations for every layer: confidence, health, memory decay, learning, risk | formalizes §9–§16, §25, §27 |
 | [api_reference.md](api_reference.md)                 | REST endpoints and schemas                     | §19               |
 | [development_phases.md](development_phases.md)       | Phase-by-phase build plan                      | §21 / ROADMAP.md  |
 
