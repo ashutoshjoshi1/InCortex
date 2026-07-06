@@ -4,7 +4,7 @@ Condensed from [Design_Doc.md §21](Design_Doc.md). Each phase builds on the las
 
 **Definition of done for every phase:** deliverables implemented, tests passing, and a plain-language walkthrough of every function added to [docs/understanding/](docs/understanding/).
 
-## Phase 0 — Project Foundation ✅ *(LICENSE still pending)*
+## Phase 0 — Project Foundation ✅
 
 **Goal:** Repository and basic project structure.
 

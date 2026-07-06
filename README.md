@@ -8,7 +8,7 @@
 
 ![Status](https://img.shields.io/badge/status-design%20phase-blueviolet)
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue)
-![License](https://img.shields.io/badge/license-TBD-lightgrey)
+![License](https://img.shields.io/badge/license-MIT-green)
 
 </div>
 
@@ -186,4 +186,4 @@ Human approval for risky behavior.
 
 ## License
 
-License not yet chosen — to be added before the first release.
+[MIT](LICENSE) — free to use, modify, and distribute.
