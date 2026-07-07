@@ -17,6 +17,8 @@ Modules (Design_Doc §9, §20):
 - `response_cell.py` — ✅ intent-keyed replies with honest confidence (added in Phase 2)
 - `reasoning_cell.py` — ✅ three-step evidence reasoning with Eq 3.1 chain confidence (added in Phase 3)
 - `safety_cell.py` — ✅ fail-closed risk gate, Eq 7.1–7.2 (added in Phase 3)
+- `ear_cell.py` — ✅ an Ear provider wearing the Cell contract; transcript confidence enters the chain math (added in Phase 6)
+- `mouth_cell.py` — ✅ a Mouth provider wearing the Cell contract — the design doc's SpeechCell (added in Phase 6)
 - `planner_cell.py` — planned, arrives with the Planning Organ
 
 **Math:** [docs/math_model.md §1](../../docs/math_model.md) — activation, entropy confidence, history blending, health score, and status bands (Eq. 1.1–1.10).

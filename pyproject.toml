@@ -12,6 +12,7 @@ requires-python = ">=3.11"
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-cov>=5"]
+voice = ["openai-whisper"]
 
 [tool.setuptools.packages.find]
 include = ["incortex*"]

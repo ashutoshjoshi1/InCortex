@@ -2,9 +2,10 @@
 
 Scripts (Design_Doc §20):
 
-- `run_cli.py` — ✅ CLI chat demo wiring the Phase 1 Cells (Phase 0 success criterion)
-- `init_db.py` — planned: initialize SQLite memory storage (Phase 5)
-- `run_api.py` — planned: start the FastAPI service (Phase 4+)
-- `seed_memory.py` — planned: load starter memory records (Phase 5)
+- `run_cli.py` — ✅ text chat with the full brain; persistent memory (default `data/incortex.db`)
+- `run_voice.py` — ✅ voice chat: type to talk, replies spoken via the system voice (Phase 6)
+- `init_db.py` — superseded: the MemoryManager creates its SQLite schema on first use
+- `run_api.py` — planned: start the FastAPI service
+- `seed_memory.py` — planned: load starter memory records
 
-**Status:** `run_cli.py` runs; the rest arrive with their phases.
+**Status:** both chat entrypoints run; the API launcher arrives with its phase.

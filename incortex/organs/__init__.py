@@ -6,6 +6,7 @@ from incortex.organs.learning_organ import LearningOrgan
 from incortex.organs.memory_organ import MemoryOrgan
 from incortex.organs.reasoning_organ import ReasoningOrgan
 from incortex.organs.safety_organ import SafetyOrgan
+from incortex.organs.speech_organ import SpeechOrgan
 
 __all__ = [
     "BaseOrgan",
@@ -15,4 +16,5 @@ __all__ = [
     "OrganOutput",
     "ReasoningOrgan",
     "SafetyOrgan",
+    "SpeechOrgan",
 ]

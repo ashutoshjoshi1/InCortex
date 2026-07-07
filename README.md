@@ -18,7 +18,7 @@ The project grows intelligence from the smallest unit, called a **Cell**, into l
 
 InCortex is not one giant model. It is a **living system of connected intelligence modules**.
 
-> 🧬 **Project status: Phase 5 — Memory and Learning implemented.** The brain now **remembers between runs**: facts persist in SQLite ([`incortex/memory/`](incortex/memory/)) behind real vector-similarity retrieval with a forgetting curve, and learning accumulates ([`incortex/learning/`](incortex/learning/)) — a durable JSONL learning history plus a mistake tracker that turns repeated failures into remembered weaknesses. Try `python scripts/run_cli.py`, teach it something, quit, run it again. Plain-language walkthroughs live in [docs/understanding/](docs/understanding/); the full architecture is in [Design_Doc.md](Design_Doc.md), build order in [ROADMAP.md](ROADMAP.md).
+> 🧬 **Project status: Phase 6 — Voice System implemented.** The brain now has an **Ear and a Mouth** ([`incortex/speech/`](incortex/speech/)): on macOS, `python scripts/run_voice.py` speaks its replies aloud through the system voice, real audio transcription activates with the optional `voice` extra (Whisper), and a mumbled input is asked to repeat itself before the brain is bothered — hearing has a confidence too. Memory persists between runs (SQLite + vector retrieval with a forgetting curve), learning accumulates (JSONL history + mistake clustering into remembered weaknesses). Plain-language walkthroughs live in [docs/understanding/](docs/understanding/); the full architecture is in [Design_Doc.md](Design_Doc.md), build order in [ROADMAP.md](ROADMAP.md).
 
 ---
 

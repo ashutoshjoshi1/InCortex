@@ -10,7 +10,8 @@ Modules (Design_Doc §12, §20):
 - `reasoning_organ.py` — ✅ evidence-based reasoning, conservative min-mode confidence
 - `learning_organ.py` — ✅ feedback scoring and distribution
 - `safety_organ.py` — ✅ Eq 7.1–7.2 gate, action blocklist, bounded decision log
-- `input_organ.py`, `planning_organ.py`, `speech_organ.py`, `tool_organ.py` — planned (Phases 4–7; Development Organ in Phase 8)
+- `speech_organ.py` — ✅ Ear + Mouth cells behind hear/say (added in Phase 6)
+- `input_organ.py`, `planning_organ.py`, `tool_organ.py` — planned (Phase 7; Development Organ in Phase 8)
 
 **Math:** [docs/math_model.md §3](../../docs/math_model.md) — pipeline confidence degradation, organ relevance for routing (Eq. 3.1–3.2); the SafetyOrgan implements §7 (Eq. 7.1–7.2).
 

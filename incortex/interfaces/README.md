@@ -2,10 +2,10 @@
 
 Front-ends through which humans talk to InCortex.
 
-Planned modules (Design_Doc §20):
+Modules (Design_Doc §20):
 
-- `cli.py` — command-line chat (the MVP interface, Typer/Click)
-- `web.py` — web interface
-- `voice.py` — voice conversation loop (Ear + Mouth, Phase 6)
+- `voice.py` — ✅ the voice conversation loop: listen → gate on hearing confidence → think → speak (launch with `python scripts/run_voice.py`)
+- `cli.py` — the CLI currently lives in `scripts/run_cli.py`; it moves here when the API phase restructures entrypoints
+- `web.py` — planned: web interface
 
-**Status:** scaffolding only — CLI arrives with the v0.1 MVP.
+**Status:** voice implemented in Phase 6. Plain-language walkthrough: [docs/understanding/phase_6_voice_system.md](../../docs/understanding/phase_6_voice_system.md).

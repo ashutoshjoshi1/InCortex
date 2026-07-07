@@ -11,6 +11,7 @@ This is the main package. It is currently **scaffolding only** — no implementa
 | `muscles/`    | Action/execution modules                     |
 | `memory/`     | Memory types and storage                     |
 | `learning/`   | Feedback, evaluation, self-improvement       |
+| `speech/`     | Ear and Mouth device adapters                |
 | `safety/`     | Permissions, risk, policy, approval          |
 | `tools/`      | Tool registry and controlled abilities       |
 | `api/`        | FastAPI service                              |

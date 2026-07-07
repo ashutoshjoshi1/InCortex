@@ -57,7 +57,7 @@ Condensed from [Design_Doc.md §21](Design_Doc.md). Each phase builds on the las
 
 **Done when:** the system remembers a topic (or a preference) and uses it later.
 
-## Phase 6 — Voice System
+## Phase 6 — Voice System ✅
 
 **Goal:** Add Ear and Mouth.
 
