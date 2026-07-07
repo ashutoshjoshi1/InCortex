@@ -18,7 +18,7 @@ The project grows intelligence from the smallest unit, called a **Cell**, into l
 
 InCortex is not one giant model. It is a **living system of connected intelligence modules**.
 
-> 🧬 **Project status: Phase 6 — Voice System implemented.** The brain now has an **Ear and a Mouth** ([`incortex/speech/`](incortex/speech/)): on macOS, `python scripts/run_voice.py` speaks its replies aloud through the system voice, real audio transcription activates with the optional `voice` extra (Whisper), and a mumbled input is asked to repeat itself before the brain is bothered — hearing has a confidence too. Memory persists between runs (SQLite + vector retrieval with a forgetting curve), learning accumulates (JSONL history + mistake clustering into remembered weaknesses). Plain-language walkthroughs live in [docs/understanding/](docs/understanding/); the full architecture is in [Design_Doc.md](Design_Doc.md), build order in [ROADMAP.md](ROADMAP.md).
+> 🧬 **Project status: Phase 7 — Tool/Muscle System implemented.** The brain now has **muscles behind a gate** ([`incortex/tools/`](incortex/tools/)): sandboxed file access, memory search, code execution, and HTTP — every invocation passes the risk gate, and level-4 tools ask a real human `[y/N]` at the terminal before running (`tool run_python code=print(6*7)` in the CLI). It also has an Ear and a Mouth (spoken replies on macOS via `scripts/run_voice.py`), persistent memory (SQLite + vector retrieval with a forgetting curve), and accumulating learning (JSONL history + mistake clustering). Plain-language walkthroughs live in [docs/understanding/](docs/understanding/); the full architecture is in [Design_Doc.md](Design_Doc.md), build order in [ROADMAP.md](ROADMAP.md).
 
 ---
 

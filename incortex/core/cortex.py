@@ -32,12 +32,13 @@ STORE_ACTION = {"action": "store_memory", "permission_level": 2,
 
 class CortexCore:
     def __init__(self, language=None, memory=None, reasoning=None,
-                 learning=None, safety=None, clock=time.time):
+                 learning=None, safety=None, tools=None, clock=time.time):
         self.language = language or LanguageOrgan()
         self.memory = memory or MemoryOrgan()
         self.reasoning = reasoning or ReasoningOrgan()
         self.learning = learning or LearningOrgan()
         self.safety = safety or SafetyOrgan()
+        self.tools = tools  # optional ToolOrgan; the muscle system (Phase 7)
         self.bus = MessageBus()
         self.state = SystemState()
         self._clock = clock
@@ -179,8 +180,10 @@ class CortexCore:
     # -- introspection ----------------------------------------------------------
 
     def health_check(self):
-        organs = (self.language, self.memory, self.reasoning,
-                  self.learning, self.safety)
+        organs = [self.language, self.memory, self.reasoning,
+                  self.learning, self.safety]
+        if self.tools is not None:
+            organs.append(self.tools)
         return {
             "organs": [organ.health_check() for organ in organs],
             "system": self.state.snapshot(),

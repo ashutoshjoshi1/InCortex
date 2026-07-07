@@ -11,7 +11,8 @@ Modules (Design_Doc §12, §20):
 - `learning_organ.py` — ✅ feedback scoring and distribution
 - `safety_organ.py` — ✅ Eq 7.1–7.2 gate, action blocklist, bounded decision log
 - `speech_organ.py` — ✅ Ear + Mouth cells behind hear/say (added in Phase 6)
-- `input_organ.py`, `planning_organ.py`, `tool_organ.py` — planned (Phase 7; Development Organ in Phase 8)
+- `tool_organ.py` — ✅ the muscle system: registry → safety gate → human approval → execute (added in Phase 7)
+- `input_organ.py`, `planning_organ.py` — planned (Development Organ in Phase 8)
 
 **Math:** [docs/math_model.md §3](../../docs/math_model.md) — pipeline confidence degradation, organ relevance for routing (Eq. 3.1–3.2); the SafetyOrgan implements §7 (Eq. 7.1–7.2).
 

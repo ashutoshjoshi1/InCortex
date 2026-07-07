@@ -28,10 +28,12 @@ DEFAULT_LOG_SIZE = 100
 
 class SafetyOrgan(BaseOrgan):
     def __init__(self, name="safety_organ",
-                 blocked_actions=DEFAULT_BLOCKED_ACTIONS, log_size=DEFAULT_LOG_SIZE):
+                 blocked_actions=DEFAULT_BLOCKED_ACTIONS, log_size=DEFAULT_LOG_SIZE,
+                 max_auto_level=None):
         # 'min' mode: a safety verdict is never more confident than its weakest input
         super().__init__(name, capability_keywords=CAPABILITIES, confidence_mode="min")
-        self._gate = SafetyCell()
+        self._gate = (SafetyCell() if max_auto_level is None
+                      else SafetyCell(max_auto_level=max_auto_level))
         self.add_cell(self._gate, critical=True)
         self._blocked = frozenset(blocked_actions)
         self._log = deque(maxlen=log_size)

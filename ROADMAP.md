@@ -65,7 +65,7 @@ Condensed from [Design_Doc.md §21](Design_Doc.md). Each phase builds on the las
 
 **Done when:** the user can speak to InCortex and hear a spoken response.
 
-## Phase 7 — Tool/Muscle System
+## Phase 7 — Tool/Muscle System ✅
 
 **Goal:** Perform actions safely.
 
