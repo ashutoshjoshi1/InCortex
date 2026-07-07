@@ -44,6 +44,7 @@ class CortexCore:
         self._clock = clock
         self._scheduler = Scheduler(clock=clock)
         self._escalated_clusters = set()
+        self._escalated_skills = set()
         self._router = Router()
         self._router.register(self.language,
                               intents=("teach", "remember", "explain", "chat"))
@@ -157,11 +158,14 @@ class CortexCore:
         result = self.learning.distribute(message, participants,
                                           description=context.cleaned_text)
         self.state.record_learning(result.content["learning_score"])
+        # Eq 6.7 — was the chain confidence an honest prediction?
+        self.learning.record_confidence(context.chain_confidence, success)
         self._publish("user", "learning_organ", "feedback_event",
                       message, session_id)
         self._publish("learning_organ", "cortex", "learning_update",
                       result.content, session_id)
         self._escalate_weaknesses(session_id)
+        self._escalate_skills(session_id)
         return result
 
     def _escalate_weaknesses(self, session_id):
@@ -176,6 +180,20 @@ class CortexCore:
             self.memory.store(warning, importance=1.0)
             self._publish("learning_organ", "memory_organ", "error_event",
                           warning, session_id)
+
+    def _escalate_skills(self, session_id):
+        """Eq 6.6 — reliably successful behavior becomes a remembered skill,
+        stored once per cluster (the mirror image of weakness escalation)."""
+        for cluster in self.learning.skills.promoted():
+            if cluster.skill_id in self._escalated_skills:
+                continue
+            self._escalated_skills.add(cluster.skill_id)
+            note = (f"Learned skill: I am reliably good at "
+                    f"'{cluster.representative}' "
+                    f"({cluster.successes}/{cluster.trials} successes).")
+            self.memory.store(note, importance=0.9)
+            self._publish("learning_organ", "memory_organ", "learning_update",
+                          note, session_id)
 
     # -- introspection ----------------------------------------------------------
 

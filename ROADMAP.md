@@ -82,7 +82,7 @@ Condensed from [Design_Doc.md §21](Design_Doc.md). Each phase builds on the las
 
 **Done when:** InCortex can suggest code changes and draft pull requests, but cannot merge without human approval.
 
-## Phase 9 — Advanced Learning
+## Phase 9 — Advanced Learning ✅ *(fine-tuning deferred to v1.0 per §12.7)*
 
 **Goal:** Deeper self-learning.
 
