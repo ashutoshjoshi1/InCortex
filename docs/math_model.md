@@ -199,11 +199,13 @@ with fallback $\mathcal{O}^\ast = \{\arg\max_O r_O(m)\}$ if the set is empty (so
 Every queued task gets a priority score; the scheduler always pops the max. The age term guarantees no task starves:
 
 $$
-P = w_u\, u + w_i\, i + w_a \min\Big(1, \frac{\text{age}}{\text{age}_{\max}}\Big),
+P = w_u\, u + w_i\, i + w_a\, \frac{\text{age}}{\text{age}_{\max}},
 \qquad (w_u, w_i, w_a) = (0.5,\ 0.3,\ 0.2) \tag{4.3}
 $$
 
-where $u \in [0,1]$ is urgency (from the message `priority` field), $i \in [0,1]$ is importance, and age is time spent queued.
+where $u \in [0,1]$ is urgency (from the message `priority` field), $i \in [0,1]$ is importance, and age is time spent queued. The age term is **deliberately uncapped**: waiting long enough eventually outranks any fixed urgency/importance combination, which is exactly Property 8 in §11. Priority is an internal ranking score, not a cross-boundary confidence, so it may exceed 1.
+
+*(Amended in Phase 4: an earlier draft capped the age term at $w_a \cdot 1$, which would have allowed a stream of high-priority arrivals to starve an old task forever — contradicting Property 8.)*
 
 ### 4.4 Answer Acceptance
 

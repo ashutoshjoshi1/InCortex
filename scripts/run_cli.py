@@ -1,9 +1,9 @@
-"""InCortex CLI (Phase 3 — running on Organs).
+"""InCortex CLI (Phase 4 — one brain, the CortexCore).
 
-The conversation now flows through whole Organs, and every reply shows its
-pipeline confidence (Eq 3.1) — watch it degrade when memory is weak:
-LanguageOrgan understands and replies, MemoryOrgan stores and retrieves,
-ReasoningOrgan thinks over the evidence, LearningOrgan spreads feedback.
+The loop is now a thin shell: every request goes to CortexCore.handle(),
+which understands, routes, consults memory and reasoning, applies the
+safety gate and the answer-acceptance rule, and logs every step to the
+message bus. New command: 'log' shows recent brain activity (§17).
 
 Run:  python scripts/run_cli.py
 """
@@ -13,62 +13,54 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from incortex.cells.cell_math import pipeline_confidence
-from incortex.organs import LanguageOrgan, LearningOrgan, MemoryOrgan, ReasoningOrgan
+from incortex.core import CortexCore
 
 PROMPT = "you> "
-COMMANDS = "Commands: 'health' shows organ health, 'good'/'bad' gives feedback, 'quit' exits."
+COMMANDS = ("Commands: 'health' shows brain health, 'log' shows brain activity, "
+            "'good'/'bad' gives feedback, 'quit' exits.")
+LOG_PAYLOAD_WIDTH = 60
 
 
-def respond(language, memory, reasoning, text):
-    """Phase 3 chain: Language → Memory → Reasoning → Language, with Eq 3.1."""
-    understanding = language.understand(text)
-    intent = understanding.content["intent"]
-    cleaned = understanding.content["text"]
-    stages = [understanding.confidence]
-    results = []
-    if intent in ("teach", "remember"):
-        stages.append(memory.store(cleaned).confidence)
-    elif intent == "explain":
-        retrieved = memory.retrieve(cleaned)
-        results = retrieved.content["results"]
-        stages.append(retrieved.confidence)
-        stages.append(reasoning.reason(cleaned, results).confidence)
-    reply = language.respond(intent, cleaned, results)
-    stages.append(reply.confidence)
-    return reply.content["reply"], pipeline_confidence(stages)
-
-
-def give_feedback(learning, organs, success):
-    """Score the event and teach every cell in the participating organs."""
-    cells = [cell for organ in organs for cell in organ.cells]
-    content = learning.distribute({"success": success}, cells).content
-    return (
-        f"Feedback stored. Learning score {content['learning_score']:.2f} "
-        f"({content['band']} band), running average {content['running_score']:.2f}."
-    )
-
-
-def print_health(organs):
-    for organ in organs:
-        report = organ.health_check()
-        print(f"  {report['name']:<17} status={report['status']:<9} health={report['health']:.2f}")
-        for component in report["components"]:
+def print_health(core):
+    report = core.health_check()
+    for organ in report["organs"]:
+        print(f"  {organ['name']:<17} status={organ['status']:<9} "
+              f"health={organ['health']:.2f}")
+        for component in organ["components"]:
             print(f"    {component['name']:<17} status={component['status']:<9} "
                   f"health={component['health']:.2f}")
             for cell in component.get("cells", []):
                 print(f"      - {cell['name']:<15} status={cell['status']:<9} "
                       f"health={cell['health']:.2f} confidence={cell['confidence']:.2f} "
                       f"processed={cell['processed']} feedback={cell['feedback_count']}")
+    system = report["system"]
+    acceptance = system["acceptance_rate"]
+    confidence = system["confidence_ema"]
+    learning = system["learning_ema"]
+    print(f"  system: tasks={system['tasks_handled']} "
+          f"acceptance={acceptance:.2f}" if acceptance is not None
+          else "  system: no tasks yet", end="")
+    if confidence is not None:
+        print(f" confidence_ema={confidence:.2f}", end="")
+    if learning is not None:
+        print(f" learning_ema={learning:.2f}", end="")
+    print()
+
+
+def print_log(core, count=12):
+    for message in core.bus.history(count):
+        payload = str(message.payload).replace("\n", " ")
+        if len(payload) > LOG_PAYLOAD_WIDTH:
+            payload = payload[:LOG_PAYLOAD_WIDTH] + "..."
+        confidence = (f" c={message.confidence:.2f}"
+                      if message.confidence is not None else "")
+        print(f"  {message.message_type:<17} {message.source} -> "
+              f"{message.target}{confidence}  {payload}")
 
 
 def main():
-    language = LanguageOrgan()
-    memory = MemoryOrgan()
-    reasoning = ReasoningOrgan()
-    learning = LearningOrgan()
-
-    print("InCortex v0.1 - Cell Genesis (Phase 3: Organs)")
+    core = CortexCore()
+    print("InCortex v0.1 - Cell Genesis (Phase 4: Cortex Core)")
     print(COMMANDS)
     while True:
         try:
@@ -82,14 +74,25 @@ def main():
             print("Goodbye.")
             return
         if text.lower() == "health":
-            print_health([language, memory, reasoning, learning])
+            print_health(core)
+            continue
+        if text.lower() == "log":
+            print_log(core)
             continue
         if text.lower() in ("good", "bad"):
-            print(give_feedback(learning, [language, memory, reasoning],
-                                text.lower() == "good"))
+            try:
+                result = core.feedback(success=text.lower() == "good")
+            except ValueError as error:
+                print(f"({error})")
+                continue
+            content = result.content
+            print(f"Feedback stored. Learning score {content['learning_score']:.2f} "
+                  f"({content['band']} band), running average "
+                  f"{content['running_score']:.2f}.")
             continue
-        reply, chain = respond(language, memory, reasoning, text)
-        print(f"incortex> {reply}  [chain confidence {chain:.2f}]")
+        context = core.handle(text)
+        print(f"incortex> {context.reply}  "
+              f"[chain confidence {context.chain_confidence:.2f}]")
 
 
 if __name__ == "__main__":

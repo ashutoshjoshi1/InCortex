@@ -22,5 +22,6 @@ Deep-dive documentation, split out from [Design_Doc.md](../Design_Doc.md) as eac
 | [understanding/phase_1_cell_system.md](understanding/phase_1_cell_system.md) | Phase 1 — Cell System |
 | [understanding/phase_2_tissue_system.md](understanding/phase_2_tissue_system.md) | Phase 2 — Tissue System |
 | [understanding/phase_3_organ_system.md](understanding/phase_3_organ_system.md) | Phase 3 — Organ System |
+| [understanding/phase_4_cortex_core.md](understanding/phase_4_cortex_core.md) | Phase 4 — Cortex Core |
 
 `assets/` holds images used by the README and docs.

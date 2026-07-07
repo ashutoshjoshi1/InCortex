@@ -40,7 +40,7 @@ Condensed from [Design_Doc.md §21](Design_Doc.md). Each phase builds on the las
 
 **Done when:** a full task passes through multiple Organs.
 
-## Phase 4 — Cortex Core
+## Phase 4 — Cortex Core ✅
 
 **Goal:** Central brain coordinator.
 
