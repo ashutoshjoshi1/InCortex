@@ -18,7 +18,7 @@ The project grows intelligence from the smallest unit, called a **Cell**, into l
 
 InCortex is not one giant model. It is a **living system of connected intelligence modules**.
 
-> 🧬 **Project status: Phase 4 — Cortex Core implemented.** The brain now coordinates itself: Cells → Tissues → Organs → [Cortex Core](incortex/core/), with relevance-based routing, a starvation-free scheduler, safety-gated memory writes, an answer-acceptance rule that refuses low-confidence answers, and a message bus that logs all brain activity. Try `python scripts/run_cli.py` — including the `log` command to watch the organs talk. Plain-language walkthroughs live in [docs/understanding/](docs/understanding/); the full architecture is in [Design_Doc.md](Design_Doc.md), build order in [ROADMAP.md](ROADMAP.md).
+> 🧬 **Project status: Phase 5 — Memory and Learning implemented.** The brain now **remembers between runs**: facts persist in SQLite ([`incortex/memory/`](incortex/memory/)) behind real vector-similarity retrieval with a forgetting curve, and learning accumulates ([`incortex/learning/`](incortex/learning/)) — a durable JSONL learning history plus a mistake tracker that turns repeated failures into remembered weaknesses. Try `python scripts/run_cli.py`, teach it something, quit, run it again. Plain-language walkthroughs live in [docs/understanding/](docs/understanding/); the full architecture is in [Design_Doc.md](Design_Doc.md), build order in [ROADMAP.md](ROADMAP.md).
 
 ---
 

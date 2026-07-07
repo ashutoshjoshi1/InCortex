@@ -31,6 +31,26 @@ class MemoryEntry:
     stored_at: float
 
 
+def validate_memory_message(cell_name, message):
+    """Shared schema check for store/retrieve messages (used by the Phase 1
+    MemoryCell and the Phase 5 VectorMemoryCell)."""
+    if not isinstance(message, dict):
+        raise ValueError(f"{cell_name}: message must be a dict")
+    action = message.get("action")
+    if action not in ("store", "retrieve"):
+        raise ValueError(f"{cell_name}: action must be 'store' or 'retrieve'")
+    key = "content" if action == "store" else "query"
+    value = message.get(key)
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"{cell_name}: '{key}' must be a non-empty string")
+    importance = message.get("importance", DEFAULT_IMPORTANCE)
+    if not isinstance(importance, (int, float)) or not 0.0 <= importance <= 1.0:
+        raise ValueError(f"{cell_name}: importance must be a number in [0, 1]")
+    top_k = message.get("top_k", DEFAULT_TOP_K)
+    if not isinstance(top_k, int) or top_k < 1:
+        raise ValueError(f"{cell_name}: top_k must be a positive integer")
+
+
 class MemoryCell(BaseCell):
     """Messages: {"action": "store", "content": str, "importance"?: float}
     or {"action": "retrieve", "query": str, "top_k"?: int}."""
@@ -43,21 +63,7 @@ class MemoryCell(BaseCell):
         self._entries = []
 
     def _validate(self, message):
-        if not isinstance(message, dict):
-            raise ValueError(f"{self.name}: message must be a dict")
-        action = message.get("action")
-        if action not in ("store", "retrieve"):
-            raise ValueError(f"{self.name}: action must be 'store' or 'retrieve'")
-        key = "content" if action == "store" else "query"
-        value = message.get(key)
-        if not isinstance(value, str) or not value.strip():
-            raise ValueError(f"{self.name}: '{key}' must be a non-empty string")
-        importance = message.get("importance", DEFAULT_IMPORTANCE)
-        if not isinstance(importance, (int, float)) or not 0.0 <= importance <= 1.0:
-            raise ValueError(f"{self.name}: importance must be a number in [0, 1]")
-        top_k = message.get("top_k", DEFAULT_TOP_K)
-        if not isinstance(top_k, int) or top_k < 1:
-            raise ValueError(f"{self.name}: top_k must be a positive integer")
+        validate_memory_message(self.name, message)
 
     def _process(self, message):
         if message["action"] == "store":

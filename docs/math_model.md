@@ -221,11 +221,13 @@ $$
 
 ### 5.1 Embedding and Similarity
 
-Every memory record $r$ stores an embedding $\mathbf{e}_r = E(\text{content})$. Similarity between a query $q$ and a record is cosine similarity (3.2), rescaled from $[-1,1]$ to $[0,1]$:
+Every memory record $r$ stores an embedding $\mathbf{e}_r = E(\text{content})$. Similarity between a query $q$ and a record is cosine similarity (3.2), clipped to $[0,1]$:
 
 $$
-\text{sim}(q, r) = \tfrac{1}{2}\big(1 + \cos(\mathbf{e}_q, \mathbf{e}_r)\big) \tag{5.1}
+\text{sim}(q, r) = \max\big(0,\ \cos(\mathbf{e}_q, \mathbf{e}_r)\big) \tag{5.1}
 $$
+
+*(Amended in Phase 5: an earlier draft rescaled as $\tfrac{1}{2}(1+\cos)$, which maps **unrelated** pairs ($\cos \approx 0$) to similarity 0.5 — enough to pass the retrieval threshold in (5.4) and flood recall with junk. Clipping keeps "unrelated" at 0, which is what every downstream rule assumes. Negative correlation is treated as unrelated.)*
 
 ### 5.2 Recency — the Forgetting Curve
 
@@ -264,7 +266,9 @@ S(q, r) = \beta_1\, \text{sim}(q,r) + \beta_2\, \text{rec}(r,t) + \beta_3\, I_r,
 \qquad (\beta_1,\beta_2,\beta_3) = (0.6,\ 0.2,\ 0.2) \tag{5.4}
 $$
 
-Retrieve $\text{top-}k$ records by $S$, subject to $S \geq \tau_{\text{retrieve}}$ (default $0.25$) so irrelevant memories are never injected just to fill $k$ slots.
+Retrieve $\text{top-}k$ records by $S$, subject to **two** gates: $S \geq \tau_{\text{retrieve}}$ (default $0.25$) and $\text{sim}(q,r) \geq \tau_{\text{sim}}$ (default $0.1$), so irrelevant memories are never injected just to fill $k$ slots.
+
+*(Amended in Phase 5: the similarity gate $\tau_{\text{sim}}$ was added because $\beta_2 + \beta_3 = 0.4 > \tau_{\text{retrieve}}$ — a brand-new, moderately important memory would pass the score threshold with near-zero similarity. Recency and importance are for ranking relevant memories, never for resurrecting irrelevant ones.)*
 
 ### 5.5 Forgetting, Compression, and Budget
 

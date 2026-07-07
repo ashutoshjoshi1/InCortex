@@ -9,13 +9,11 @@ contract will not change.
 """
 
 from incortex.cells.base_cell import BaseCell
-from incortex.cells.cell_math import clip01, pipeline_confidence, tokenize
-
-# Words that carry no question content — command verbs and grammar glue.
-STOPWORDS = frozenset(
-    """a an and are about can could did do does explain describe for from how i
-    in is it its me my of on or please tell that the this to was were what when
-    where which who why will would you your yourself teach remember""".split()
+from incortex.cells.cell_math import (
+    CONTENT_STOPWORDS as STOPWORDS,
+    clip01,
+    pipeline_confidence,
+    tokenize,
 )
 # A conclusion is 'supported' when evidence covers at least half the focus.
 SUPPORT_THRESHOLD = 0.5

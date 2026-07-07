@@ -1,10 +1,12 @@
 """MemoryOrgan — stores and retrieves knowledge (Design_Doc §12.4).
 
-Phase 3 wraps the MemoryTissue; Phase 5 adds specialized short-term,
-long-term, and vector memory behind the same store/retrieve interface.
+Phase 5: backed by a MemoryManager — SQLite persistence, vector-similarity
+retrieval, and the forgetting curve — wrapped in a VectorMemoryCell inside
+the MemoryTissue, so everything upstream keeps the same interface.
 """
 
 from incortex.cells.memory_cell import DEFAULT_TOP_K
+from incortex.memory import MemoryManager, VectorMemoryCell
 from incortex.organs.base_organ import BaseOrgan, OrganOutput
 from incortex.tissues import MemoryTissue
 
@@ -15,9 +17,12 @@ CAPABILITIES = (
 
 
 class MemoryOrgan(BaseOrgan):
-    def __init__(self, name="memory_organ"):
+    def __init__(self, name="memory_organ", manager=None):
         super().__init__(name, capability_keywords=CAPABILITIES)
-        self._memory = MemoryTissue()
+        self.manager = manager or MemoryManager()
+        self._memory = MemoryTissue(
+            memory_cells=[VectorMemoryCell(self.manager)]
+        )
         self.add_tissue(self._memory, critical=True)
 
     def store(self, content, importance=None):

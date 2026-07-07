@@ -1,11 +1,10 @@
-"""InCortex CLI (Phase 4 — one brain, the CortexCore).
+"""InCortex CLI (Phase 5 — a brain that remembers between runs).
 
-The loop is now a thin shell: every request goes to CortexCore.handle(),
-which understands, routes, consults memory and reasoning, applies the
-safety gate and the answer-acceptance rule, and logs every step to the
-message bus. New command: 'log' shows recent brain activity (§17).
+Memory now persists: facts go to SQLite, the learning history to JSONL.
+Teach it something, quit, run it again — it still knows. Pass a database
+path to keep separate brains, or ':memory:' for an ephemeral one.
 
-Run:  python scripts/run_cli.py
+Run:  python scripts/run_cli.py [db_path]     (default: data/incortex.db)
 """
 
 import sys
@@ -14,7 +13,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from incortex.core import CortexCore
+from incortex.learning import LearningLog
+from incortex.memory import IN_MEMORY, MemoryManager
+from incortex.organs import LearningOrgan, MemoryOrgan
 
+DEFAULT_DB_PATH = "data/incortex.db"
 PROMPT = "you> "
 COMMANDS = ("Commands: 'health' shows brain health, 'log' shows brain activity, "
             "'good'/'bad' gives feedback, 'quit' exits.")
@@ -58,9 +61,24 @@ def print_log(core, count=12):
               f"{message.target}{confidence}  {payload}")
 
 
+def build_core(db_path):
+    """A persistent brain: SQLite memories + JSONL learning history."""
+    memory = MemoryOrgan(manager=MemoryManager(db_path=db_path))
+    if db_path != IN_MEMORY:
+        log_path = Path(db_path).with_name("learning_log.jsonl")
+        learning = LearningOrgan(log=LearningLog(log_path))
+    else:
+        learning = LearningOrgan()
+    return CortexCore(memory=memory, learning=learning)
+
+
 def main():
-    core = CortexCore()
-    print("InCortex v0.1 - Cell Genesis (Phase 4: Cortex Core)")
+    db_path = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_DB_PATH
+    core = build_core(db_path)
+    stats = core.memory.manager.stats()
+    print("InCortex v0.1 - Cell Genesis (Phase 5: Memory and Learning)")
+    print(f"Memory: {db_path} ({stats['active']} memories, "
+          f"{stats['archived']} archived, {len(core.learning.log)} learning events)")
     print(COMMANDS)
     while True:
         try:

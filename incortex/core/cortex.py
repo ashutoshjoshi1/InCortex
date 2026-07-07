@@ -42,6 +42,7 @@ class CortexCore:
         self.state = SystemState()
         self._clock = clock
         self._scheduler = Scheduler(clock=clock)
+        self._escalated_clusters = set()
         self._router = Router()
         self._router.register(self.language,
                               intents=("teach", "remember", "explain", "chat"))
@@ -152,13 +153,28 @@ class CortexCore:
         message = {"success": success}
         if rating is not None:
             message["rating"] = rating
-        result = self.learning.distribute(message, participants)
+        result = self.learning.distribute(message, participants,
+                                          description=context.cleaned_text)
         self.state.record_learning(result.content["learning_score"])
         self._publish("user", "learning_organ", "feedback_event",
                       message, session_id)
         self._publish("learning_organ", "cortex", "learning_update",
                       result.content, session_id)
+        self._escalate_weaknesses(session_id)
         return result
+
+    def _escalate_weaknesses(self, session_id):
+        """§16.4 — a mistake that keeps recurring becomes a remembered fact,
+        stored once per cluster with maximum importance."""
+        for cluster in self.learning.tracker.known_weaknesses():
+            if cluster.cluster_id in self._escalated_clusters:
+                continue
+            self._escalated_clusters.add(cluster.cluster_id)
+            warning = (f"Known weakness: I keep failing at "
+                       f"'{cluster.representative}' ({cluster.count} times so far).")
+            self.memory.store(warning, importance=1.0)
+            self._publish("learning_organ", "memory_organ", "error_event",
+                          warning, session_id)
 
     # -- introspection ----------------------------------------------------------
 

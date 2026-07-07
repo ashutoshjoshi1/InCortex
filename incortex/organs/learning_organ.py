@@ -1,10 +1,11 @@
 """LearningOrgan — the heart of self-improvement (Design_Doc §12.7).
 
-Phase 3 wraps the LearningTissue: scores feedback events (Eq 6.1-6.2),
-tracks the running learning score (Eq 1.7), and spreads feedback to every
-cell that took part in a task.
+Phase 5: every scored event also lands in the durable LearningLog, and
+failures feed the MistakeTracker, whose recurring clusters the Cortex
+escalates into remembered weaknesses (§16.4).
 """
 
+from incortex.learning import LearningLog, MistakeTracker
 from incortex.organs.base_organ import BaseOrgan, OrganOutput
 from incortex.tissues import LearningTissue
 
@@ -15,21 +16,38 @@ CAPABILITIES = (
 
 
 class LearningOrgan(BaseOrgan):
-    def __init__(self, name="learning_organ"):
+    def __init__(self, name="learning_organ", log=None, tracker=None):
         super().__init__(name, capability_keywords=CAPABILITIES)
         self._learning = LearningTissue()
         self.add_tissue(self._learning, critical=True)
+        self.log = log if log is not None else LearningLog()
+        self.tracker = tracker if tracker is not None else MistakeTracker()
 
-    def score(self, feedback_message):
-        """Score one feedback event and update the running average."""
-        return self._wrap(self._learning.process(feedback_message))
+    def score(self, feedback_message, description=None):
+        """Score one feedback event, log it, and track any mistake."""
+        output = self._learning.process(feedback_message)
+        self._record(feedback_message, output, description)
+        return self._wrap(output)
 
-    def distribute(self, feedback_message, cells):
-        """Score the event, then teach it to every participating cell."""
-        return self._wrap(self._learning.distribute(feedback_message, cells))
+    def distribute(self, feedback_message, cells, description=None):
+        """Score, log, track — then teach every participating cell."""
+        output = self._learning.distribute(feedback_message, cells)
+        self._record(feedback_message, output, description)
+        return self._wrap(output)
 
     def process(self, message):
         return self.score(message)
+
+    def _record(self, message, tissue_output, description):
+        content = tissue_output.content
+        self.log.record({
+            "success": message["success"],
+            "rating": message.get("rating"),
+            "description": description,
+            "learning_score": content["learning_score"],
+            "band": content["band"],
+        })
+        self.tracker.record(message["success"], description)
 
     def _wrap(self, tissue_output):
         return OrganOutput(

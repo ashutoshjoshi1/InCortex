@@ -9,6 +9,14 @@ import re
 
 _WORD_RE = re.compile(r"[a-z0-9']+")
 
+# Words that carry no content — grammar glue and command verbs. Shared by
+# the reasoning focus extractor and the memory embedder.
+CONTENT_STOPWORDS = frozenset(
+    """a an and are about can could did do does explain describe for from how i
+    in is it its me my of on or please tell that the this to was were what when
+    where which who why will would you your yourself teach remember""".split()
+)
+
 
 def clip01(value):
     """Clamp to [0, 1] — math_model.md §0: every cross-boundary score is normalized."""

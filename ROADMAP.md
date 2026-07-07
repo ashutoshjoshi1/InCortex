@@ -48,7 +48,7 @@ Condensed from [Design_Doc.md §21](Design_Doc.md). Each phase builds on the las
 
 **Done when:** the Cortex Core routes a user request through the right Organs and generates a response.
 
-## Phase 5 — Memory and Learning
+## Phase 5 — Memory and Learning ✅
 
 **Goal:** Remember and improve.
 
