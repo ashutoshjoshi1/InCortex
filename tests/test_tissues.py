@@ -15,6 +15,7 @@ from incortex.tissues import (
     LanguageTissue,
     LearningTissue,
     MemoryTissue,
+    ReasoningTissue,
     TissueOutput,
 )
 
@@ -276,6 +277,31 @@ class TestMemoryTissue:
         tissue.store("a crucial fact", importance=1.0)
         result = tissue.retrieve("crucial fact").content["results"][0]
         assert result["importance"] == pytest.approx(1.0)
+
+
+# ---------------------------------------------------------------------------
+# ReasoningTissue — chain reasoning over evidence
+# ---------------------------------------------------------------------------
+
+
+class TestReasoningTissue:
+    def test_reason_wraps_the_cell(self):
+        evidence = [{"content": "gravity pulls objects toward each other", "score": 0.8}]
+        out = ReasoningTissue().reason("how does gravity work", evidence)
+        assert isinstance(out, TissueOutput)
+        assert out.content["supported"] is True
+        assert len(out.cell_outputs) == 1
+
+    def test_process_takes_a_dict(self):
+        out = ReasoningTissue().process({"question": "what is x", "evidence": []})
+        assert out.content["supported"] is False
+        with pytest.raises(ValueError):
+            ReasoningTissue().process("not a dict")
+
+    def test_has_one_critical_cell(self):
+        tissue = ReasoningTissue()
+        assert len(tissue.cells) == 1
+        assert tissue.health_check()["status"] == "active"
 
 
 # ---------------------------------------------------------------------------

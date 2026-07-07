@@ -61,6 +61,37 @@ def status_band(health):
     return "failing"
 
 
+def pipeline_confidence(confidences, mode="geometric"):
+    """Eq 3.1 — confidence of a multi-stage chain.
+
+    Geometric mean (default) punishes any weak stage far more than an
+    arithmetic mean would; 'min' mode is the conservative variant for
+    safety-relevant pipelines.
+    """
+    if not confidences:
+        raise ValueError("pipeline_confidence needs at least one stage")
+    if mode == "min":
+        return clip01(min(confidences))
+    if mode != "geometric":
+        raise ValueError("mode must be 'geometric' or 'min'")
+    product = 1.0
+    for confidence in confidences:
+        product *= clip01(confidence)
+    return product ** (1.0 / len(confidences))
+
+
+def overlap_coefficient(tokens_a, tokens_b):
+    """Phase 3 stand-in for embedding relevance (Eq 3.2) — |A∩B| / min(|A|,|B|).
+
+    Kinder to short queries than Jaccard: a two-word query hitting one
+    capability keyword scores 0.5, not 1/(all words combined). Replaced by
+    cosine similarity over embeddings when Phase 5 adds vector memory.
+    """
+    if not tokens_a or not tokens_b:
+        return 0.0
+    return len(tokens_a & tokens_b) / min(len(tokens_a), len(tokens_b))
+
+
 def exponential_decay(elapsed, half_life):
     """Eq 5.2 — the forgetting curve. Value halves exactly every half-life."""
     if half_life <= 0:

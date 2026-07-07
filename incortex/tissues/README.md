@@ -8,7 +8,7 @@ Modules (Design_Doc §10, §20):
 - `language_tissue.py` — ✅ TextCell → IntentCell → ResponseCell chain
 - `memory_tissue.py` — ✅ merged, deduplicated retrieval across MemoryCells
 - `learning_tissue.py` — ✅ feedback scoring, running learning score, feedback distribution
-- `reasoning_tissue.py` — planned, arrives with Phase 3
+- `reasoning_tissue.py` — ✅ chain reasoning over evidence (added in Phase 3)
 
 **Math:** [docs/math_model.md §2](../../docs/math_model.md) — confidence-weighted combination, voting, mixture-of-experts gating, tissue health (Eq. 2.1–2.4).
 

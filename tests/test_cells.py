@@ -16,7 +16,9 @@ from incortex.cells import (
     FeedbackCell,
     IntentCell,
     MemoryCell,
+    ReasoningCell,
     ResponseCell,
+    SafetyCell,
     TextCell,
 )
 from incortex.cells.cell_math import (
@@ -450,6 +452,138 @@ class TestResponseCell:
             cell.process({"intent": "explain", "text": "x", "memory_results": "nope"})
         with pytest.raises(ValueError):
             cell.process({"intent": "explain", "text": "x", "memory_results": [{"score": 1}]})
+
+
+class TestReasoningCell:
+    def test_concludes_from_covering_evidence(self):
+        # Steps: focus found (1.0) → coverage (1.0) → conclusion (0.66)
+        # Chain (Eq 3.1): (1.0 * 1.0 * 0.66)^(1/3) = 0.871
+        evidence = [{"content": "photosynthesis makes food from sunlight", "score": 0.66}]
+        out = ReasoningCell().process({"question": "What is photosynthesis?", "evidence": evidence})
+        assert out.content["supported"] is True
+        assert out.content["conclusion"] == "photosynthesis makes food from sunlight"
+        assert out.content["coverage"] == pytest.approx(1.0)
+        assert out.raw_confidence == pytest.approx(0.871, abs=1e-3)
+
+    def test_reports_three_steps_with_confidences(self):
+        out = ReasoningCell().process({"question": "what is gravity", "evidence": []})
+        steps = out.content["steps"]
+        assert [step["name"] for step in steps] == [
+            "identify_focus", "match_evidence", "form_conclusion",
+        ]
+        assert all(0.0 <= step["confidence"] <= 1.0 for step in steps)
+
+    def test_no_evidence_zeroes_the_chain(self):
+        # Coverage step is 0 → geometric mean is 0 (§11 property: zero stage kills chain)
+        out = ReasoningCell().process({"question": "What is dark matter?", "evidence": []})
+        assert out.content["supported"] is False
+        assert "no relevant evidence" in out.content["conclusion"]
+        assert out.raw_confidence == 0.0
+
+    def test_all_stopword_question_has_no_focus(self):
+        out = ReasoningCell().process(
+            {"question": "what is it", "evidence": [{"content": "a fact", "score": 0.9}]}
+        )
+        assert out.content["steps"][0]["confidence"] == 0.0
+        assert out.raw_confidence == 0.0
+
+    def test_partial_coverage_below_half_is_unsupported(self):
+        # Focus {photosynthesis, martian, farming}: evidence covers 1 of 3
+        evidence = [{"content": "photosynthesis needs sunlight", "score": 0.9}]
+        out = ReasoningCell().process(
+            {"question": "photosynthesis martian farming", "evidence": evidence}
+        )
+        assert out.content["coverage"] == pytest.approx(1 / 3)
+        assert out.content["supported"] is False
+
+    def test_picks_the_best_covering_evidence(self):
+        evidence = [
+            {"content": "the moon orbits the earth", "score": 0.9},
+            {"content": "gravity pulls objects toward each other", "score": 0.6},
+        ]
+        out = ReasoningCell().process({"question": "how does gravity work", "evidence": evidence})
+        assert "gravity" in out.content["conclusion"]
+
+    def test_validates_messages(self):
+        cell = ReasoningCell()
+        with pytest.raises(ValueError):
+            cell.process("not a dict")
+        with pytest.raises(ValueError):
+            cell.process({"question": "   "})
+        with pytest.raises(ValueError):
+            cell.process({"question": "x", "evidence": "nope"})
+        with pytest.raises(ValueError):
+            cell.process({"question": "x", "evidence": [{"score": 0.5}]})
+        with pytest.raises(ValueError):
+            cell.process({"question": "x", "evidence": [{"content": "y", "score": 2.0}]})
+
+
+class TestSafetyCell:
+    def test_risk_is_probability_times_impact(self):
+        # Eq 7.1
+        out = SafetyCell().process({"action": "write_file", "permission_level": 2,
+                                    "harm_probability": 0.5, "impact": 0.4})
+        assert out.content["risk"] == pytest.approx(0.2)
+
+    def test_gate_decisions(self):
+        # Eq 7.2, precedence: execute → require_approval → block
+        cell = SafetyCell()
+        execute = cell.process({"action": "read", "permission_level": 1,
+                                "harm_probability": 0.1, "impact": 0.1})
+        assert execute.content["decision"] == "execute"
+        high_tier = cell.process({"action": "run_code", "permission_level": 4,
+                                  "harm_probability": 0.0, "impact": 0.0})
+        assert high_tier.content["decision"] == "require_approval"
+        risky = cell.process({"action": "write", "permission_level": 1,
+                              "harm_probability": 0.9, "impact": 0.9})
+        assert risky.content["decision"] == "require_approval"
+        over_ceiling = cell.process({"action": "api_call", "permission_level": 3,
+                                     "harm_probability": 0.0, "impact": 0.0})
+        assert over_ceiling.content["decision"] == "block"
+
+    def test_fail_closed_defaults(self):
+        # §11 property 6: missing estimates are treated as worst case (risk 1.0)
+        out = SafetyCell().process({"action": "unknown_tool", "permission_level": 1})
+        assert out.content["risk"] == pytest.approx(1.0)
+        assert out.content["decision"] == "require_approval"
+        assert out.content["assumed_worst_case"] is True
+
+    def test_gate_never_loosens_as_risk_grows(self):
+        # §11 property 2: monotonicity of the gate
+        cell = SafetyCell()
+        rank = {"execute": 0, "require_approval": 1, "block": 2}
+        previous = 0
+        for harm in (0.0, 0.2, 0.4, 0.6, 0.8, 1.0):
+            decision = cell.process({"action": "x", "permission_level": 1,
+                                     "harm_probability": harm, "impact": 1.0}).content["decision"]
+            assert rank[decision] >= previous
+            previous = rank[decision]
+
+    def test_custom_ceiling(self):
+        lenient = SafetyCell(max_auto_level=3)
+        out = lenient.process({"action": "api_call", "permission_level": 3,
+                               "harm_probability": 0.0, "impact": 0.0})
+        assert out.content["decision"] == "execute"
+
+    def test_decision_confidence_is_certain(self):
+        out = SafetyCell().process({"action": "x", "permission_level": 0,
+                                    "harm_probability": 0.0, "impact": 0.0})
+        assert out.raw_confidence == pytest.approx(1.0)
+
+    def test_validates_messages(self):
+        cell = SafetyCell()
+        with pytest.raises(ValueError):
+            cell.process("not a dict")
+        with pytest.raises(ValueError):
+            cell.process({"action": "", "permission_level": 1})
+        with pytest.raises(ValueError):
+            cell.process({"action": "x"})  # missing level
+        with pytest.raises(ValueError):
+            cell.process({"action": "x", "permission_level": 7})
+        with pytest.raises(ValueError):
+            cell.process({"action": "x", "permission_level": True})
+        with pytest.raises(ValueError):
+            cell.process({"action": "x", "permission_level": 1, "harm_probability": 1.5})
 
 
 class TestBaseCellAccepts:

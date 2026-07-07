@@ -18,7 +18,7 @@ The project grows intelligence from the smallest unit, called a **Cell**, into l
 
 InCortex is not one giant model. It is a **living system of connected intelligence modules**.
 
-> 🧬 **Project status: Phase 2 — Tissue System implemented.** Cells ([`incortex/cells/`](incortex/cells/)) and Tissues ([`incortex/tissues/`](incortex/tissues/)) are built and fully tested; try the chain with `python scripts/run_cli.py`. Plain-language walkthroughs live in [docs/understanding/](docs/understanding/); the full architecture is in [Design_Doc.md](Design_Doc.md), build order in [ROADMAP.md](ROADMAP.md).
+> 🧬 **Project status: Phase 3 — Organ System implemented.** Cells ([`incortex/cells/`](incortex/cells/)), Tissues ([`incortex/tissues/`](incortex/tissues/)), and Organs ([`incortex/organs/`](incortex/organs/)) are built and fully tested — including the reasoning chain and the fail-closed safety gate. Try it with `python scripts/run_cli.py` and watch each reply's chain confidence. Plain-language walkthroughs live in [docs/understanding/](docs/understanding/); the full architecture is in [Design_Doc.md](Design_Doc.md), build order in [ROADMAP.md](ROADMAP.md).
 
 ---
 

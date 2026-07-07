@@ -16,4 +16,4 @@ Four test categories:
 
 **Math:** [docs/math_model.md §11](../docs/math_model.md) lists the testable properties of every equation — range, monotonicity, decay, fail-closed gating, convergence — which become property tests here.
 
-**Status:** `test_cells.py` (65 tests) and `test_tissues.py` (33 tests) implemented — 100% coverage of the Cell and Tissue layers, including the math property tests. Remaining modules ship alongside their phases.
+**Status:** `test_cells.py` (78 tests), `test_tissues.py` (37 tests), and `test_organs.py` (43 tests) implemented — 100% coverage of the Cell, Tissue, and Organ layers, including the math property tests. Remaining modules ship alongside their phases.

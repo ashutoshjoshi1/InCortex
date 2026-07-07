@@ -15,7 +15,9 @@ Modules (Design_Doc §9, §20):
 - `memory_cell.py` — ✅ in-memory store/retrieve with the Eq 5.4 retrieval triad
 - `feedback_cell.py` — ✅ rating normalization and learning score bands
 - `response_cell.py` — ✅ intent-keyed replies with honest confidence (added in Phase 2)
-- `reasoning_cell.py`, `planner_cell.py`, `safety_cell.py` — planned, arrive with Phases 3–7
+- `reasoning_cell.py` — ✅ three-step evidence reasoning with Eq 3.1 chain confidence (added in Phase 3)
+- `safety_cell.py` — ✅ fail-closed risk gate, Eq 7.1–7.2 (added in Phase 3)
+- `planner_cell.py` — planned, arrives with the Planning Organ
 
 **Math:** [docs/math_model.md §1](../../docs/math_model.md) — activation, entropy confidence, history blending, health score, and status bands (Eq. 1.1–1.10).
 
