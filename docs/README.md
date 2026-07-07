@@ -26,5 +26,6 @@ Deep-dive documentation, split out from [Design_Doc.md](../Design_Doc.md) as eac
 | [understanding/phase_5_memory_learning.md](understanding/phase_5_memory_learning.md) | Phase 5 — Memory and Learning |
 | [understanding/phase_6_voice_system.md](understanding/phase_6_voice_system.md) | Phase 6 — Voice System |
 | [understanding/phase_7_tool_system.md](understanding/phase_7_tool_system.md) | Phase 7 — Tool/Muscle System |
+| [understanding/phase_8_development_organ.md](understanding/phase_8_development_organ.md) | Phase 8 — Development Organ |
 
 `assets/` holds images used by the README and docs.

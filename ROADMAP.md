@@ -74,7 +74,7 @@ Condensed from [Design_Doc.md §21](Design_Doc.md). Each phase builds on the las
 
 **Done when:** InCortex uses tools only after safety approval.
 
-## Phase 8 — Development Organ
+## Phase 8 — Development Organ ✅
 
 **Goal:** Help develop itself safely.
 

@@ -1,6 +1,7 @@
 """The Organ layer — specialized intelligence subsystems (Phase 3)."""
 
 from incortex.organs.base_organ import BaseOrgan, OrganOutput
+from incortex.organs.development_organ import DevelopmentOrgan
 from incortex.organs.language_organ import LanguageOrgan
 from incortex.organs.learning_organ import LearningOrgan
 from incortex.organs.memory_organ import MemoryOrgan
@@ -11,6 +12,7 @@ from incortex.organs.tool_organ import ToolOrgan
 
 __all__ = [
     "BaseOrgan",
+    "DevelopmentOrgan",
     "LanguageOrgan",
     "LearningOrgan",
     "MemoryOrgan",
