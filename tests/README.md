@@ -16,4 +16,4 @@ Four test categories:
 
 **Math:** [docs/math_model.md §11](../docs/math_model.md) lists the testable properties of every equation — range, monotonicity, decay, fail-closed gating, convergence — which become property tests here.
 
-**Status:** `test_cells.py` (78), `test_tissues.py` (37), `test_organs.py` (43), `test_core.py` (46), `test_memory.py` (37), `test_learning.py` (47), `test_speech.py` (33), `test_safety.py` (47), and `test_development.py` (43) — 412 tests, 100% coverage of every layer, including the math property tests and the design doc's §26.3 safety acceptance cases. All nine roadmap phases are implemented.
+**Status:** `test_cells.py` (78), `test_tissues.py` (37), `test_organs.py` (43), `test_core.py` (46), `test_memory.py` (37), `test_learning.py` (47), `test_speech.py` (33), `test_safety.py` (47), `test_development.py` (43), `test_config.py` (15), and `test_api.py` (23) — 450 tests, 100% coverage of every layer, including the math property tests and the design doc's §26.3 safety acceptance cases. All nine roadmap phases plus Phase 10 (API & config) are implemented.

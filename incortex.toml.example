@@ -1,0 +1,22 @@
+# InCortex configuration (Design_Doc §24, TOML form).
+# Copy to incortex.toml and adjust. Every key is optional; these are the
+# defaults except where noted.
+
+[memory]
+db_path = "data/incortex.db"   # default ":memory:" (nothing persists)
+half_life_days = 7.0           # Eq 5.2 forgetting-curve half-life
+short_term_capacity = 100
+
+[learning]
+log_path = "data/learning_log.jsonl"   # default: in-memory only
+
+[safety]
+max_auto_level = 2   # 0-5; tools above this are blocked, 4-5 always need a human
+
+[tools]
+enabled = true       # default false
+sandbox_dir = "data/sandbox"
+
+[api]
+host = "127.0.0.1"
+port = 8000

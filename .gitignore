@@ -9,6 +9,7 @@ venv/
 
 # Environment
 .env
+incortex.toml
 
 # Testing
 .pytest_cache/

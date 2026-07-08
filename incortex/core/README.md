@@ -9,7 +9,7 @@ Modules (Design_Doc §13–§14, §20):
 - `scheduler.py` — ✅ Eq 4.3 starvation-free priority queue (uncapped age term)
 - `message.py` — ✅ `CortexMessage` envelope + `MessageBus` with bounded activity history (§17)
 - `state.py` — ✅ `TaskContext` (per-request case file) + `SystemState` (EMA scoreboard)
-- `config.py` — planned: configuration loading arrives when the API phase adds external config
+- `config.py` — ✅ typed §24 config (TOML via stdlib `tomllib`), strict loading (unknown keys are errors), and `build_cortex(config)` — a brain assembled to match the file (added in Phase 10)
 
 **Math:** [docs/math_model.md §4](../../docs/math_model.md) — loop composition, routing threshold, scheduling priority, answer acceptance (Eq. 4.1–4.4). *Eq 4.3 was amended in Phase 4: the age term is uncapped so the no-starvation property (§11.8) actually holds.*
 

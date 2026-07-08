@@ -90,6 +90,28 @@ Condensed from [Design_Doc.md §21](Design_Doc.md). Each phase builds on the las
 
 **Done when:** the system can test multiple strategies, compare performance, and improve future behavior.
 
+## Beyond v0.1
+
+### Phase 10 — API & Configuration ✅
+
+**Goal:** Make the brain usable by other software.
+
+- Typed TOML configuration (§24; TOML instead of YAML — stdlib `tomllib`, zero new required dependencies) with strict loading and `build_cortex(config)`
+- The full §19 REST API (FastAPI, optional `api` extra): chat, memory, feedback, tools, health, organs, cells, logs — one `{success, data, error}` envelope everywhere
+- Fail-closed over HTTP: an unattended server denies level-4 tools
+
+**Done when:** `python scripts/run_api.py` serves a configurable brain whose endpoint behavior matches the CLI exactly. ✅
+
+### Still open (candidate next phases)
+
+- LLM-backed cells (intent, response, reasoning) replacing the keyword placeholders
+- Neural embeddings behind `HashingEmbedder`'s interface (Eq 5.1's real form)
+- Planning Organ + PlannerCell (§12.6), Input Organ (§12.2), curriculum learning (v0.5)
+- Working-memory knapsack (Eq 5.6), full importance factors (Eq 5.3), §8 metrics + Eq 7.3 anomaly flagging
+- Episodic memory, memory compression by summarization
+- Web dashboard; GitHub PR creation from Development Organ drafts
+- Fine-tuning (v1.0) and reinforcement learning (v1.5) per §12.7
+
 ## Learning Capability Timeline
 
 | Learning Type          | Version | Description                               |

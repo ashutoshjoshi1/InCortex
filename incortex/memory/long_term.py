@@ -39,7 +39,10 @@ class LongTermMemory:
         path = str(db_path)
         if path != IN_MEMORY:
             Path(path).parent.mkdir(parents=True, exist_ok=True)
-        self._conn = sqlite3.connect(path)
+        # check_same_thread=False: the API serves requests from a threadpool.
+        # Every operation here is a single statement + commit, which SQLite
+        # serializes internally, so cross-thread use is safe at this scale.
+        self._conn = sqlite3.connect(path, check_same_thread=False)
         self._conn.execute(_SCHEMA)
         self._conn.commit()
 
